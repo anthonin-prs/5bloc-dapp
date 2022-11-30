@@ -1,0 +1,45 @@
+Details:
+• Privilege Card:
+  - Admin can create them
+  - Got a Name, Price, Quantity, Image and Description
+  - Users can buy them
+
+• User:
+  - Can buy privilege card
+  - Can list his cards
+  - Can sold / send his cards to someone else
+
+• Ticket:
+  - Users can buy them (bus train, subway)
+  - Base price is the same
+  - Reduction based on privilege card owned by user
+  - Card with > reduction used 1st
+  - Tickets can't be refunded, sold, sent
+
+• Bus / Subway / Train system:
+  - Trade NFT to access transport
+
+
+
+Tips:
+• Contracts:
+  - Build on default expend around
+  - Get free GoerliETH (https://goerlifaucet.com/)
+  - Test the contracts and deploy
+
+• Frontend:
+  - No need to wait full contracts deployments
+  - Expected to be usable without hasle
+  - Optimisation (code / contract requests)
+  - User friendly (errors, warnings, helps)
+
+• Documentation:
+  - Good and easy doc
+  - Should cover edge cases
+  - Automated tests (?)
+  - Explain different tools used and add README for setup
+
+Deliverables:
+• Archive with source code (front & back)
+• Full doc on how to deploy / use (will be tested)
+• Powerpoint alike doc 
