@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: GPL-3.0
 
+/// @title Contract that allow ticket selling system
+/// @author 5BLOC - SUPINFO 2022
+/// @notice It will allow you to buy ticket to use on metro/bus/train and apply reductions based on your reduction cards
+
 pragma solidity >=0.7.0 <0.9.0;
 
-/**
- * @title Tickets
- * @dev Implements tickets buy / usage process
- */
 contract Tickets {
     address public contract_owner;
+    address public card_contract_address;
     uint256 public ticket_price;
 
     mapping(address => bool) public admins;
@@ -20,11 +21,13 @@ contract Tickets {
     /**
      * @dev Create a "ticket selling machine"
      * @param base_price default price for tickets (in gwei)
+     * @param cardContract address of the card contract
      */
-    constructor(uint256 base_price) {
+    constructor(uint256 base_price, address cardContract) {
         contract_owner = msg.sender;
         admin_set(contract_owner);
         ticket_price = base_price * 10e8;
+        card_contract_address = cardContract;
     }
 
     /**
@@ -58,7 +61,7 @@ contract Tickets {
      * @param _amount number of tickets wanted, require exact value as msg.value
      */
     function ticket_buy(uint256 _amount) external payable {
-        uint256 order_value = _amount * ticket_price;
+        uint256 order_value = calculate_ticket_price(_amount);
 
         require(msg.value == order_value, "Need to send exact amount of ETH");
 
@@ -70,6 +73,31 @@ contract Tickets {
         tickets[msg.sender] += _amount;
 
         emit ticketBuy(msg.sender, _amount);
+    }
+
+    /**
+     * @dev Get ticket price
+     * @param _amount number of tickets wanted, require exact value as msg.value
+     */
+    function calculate_ticket_price(uint256 _amount)
+        public
+        view
+        returns (uint256)
+    {
+        DiscountCards card_contract = DiscountCards(card_contract_address);
+        uint256 user_best_reduction = card_contract.getBiggestReduct(
+            msg.sender
+        );
+
+        uint256 base_price = _amount * ticket_price * 100;
+
+        uint256 final_price;
+        if (user_best_reduction > 0) {
+            final_price = (base_price * user_best_reduction) / (10**(2**2));
+        } else {
+            final_price = base_price;
+        }
+        return final_price;
     }
 
     /**
