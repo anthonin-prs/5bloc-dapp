@@ -93,7 +93,9 @@ contract Tickets {
 
         uint256 final_price;
         if (user_best_reduction > 0) {
-            final_price = (base_price * user_best_reduction) / (10**(2**2));
+            final_price =
+                (base_price * (100 - user_best_reduction)) /
+                (10**(2**2));
         } else {
             final_price = base_price;
         }
